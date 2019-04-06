@@ -16,13 +16,16 @@ RUN apt-get update && apt-get install -y apt-transport-https && \
     chmod +x /usr/local/bin/exa && \
     echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list && \
     apt-get update && \
-    apt-get install -y kubectl zsh neovim jq && \
+    apt-get install -y kubectl zsh neovim jq gawk && \
     apt-get clean -y && \
     rm -rf /tmp/*
 
+ADD scripts/entrypoint.sh /bin/
+
 USER theia
 
-ENV SHELL=/bin/zsh
+ENV SHELL=/bin/zsh \
+    VSCODE_EXTENSIONS="https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-kubernetes-tools/vsextensions/vscode-kubernetes-tools/0.1.18/vspackage https://marketplace.visualstudio.com/_apis/public/gallery/publishers/redhat/vsextensions/vscode-yaml/0.4.0/vspackage"
 
 ADD --chown=theia:theia dotfiles/init.vim $HOME/.config/nvim/init.vim
 
@@ -31,16 +34,8 @@ RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh
     curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim && \
     git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions && \
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.zsh/zsh-syntax-highlighting && \
-    nvim "+PlugInstall" "+qall" && \
-    mkdir -p $HOME/plugins/vscode-kubernetes-tools && \
-    wget https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-kubernetes-tools/vsextensions/vscode-kubernetes-tools/0.1.18/vspackage -O /tmp/vscode-kubernetes-tools.zip.gz && \
-    gunzip /tmp/vscode-kubernetes-tools.zip.gz && \
-    unzip /tmp/vscode-kubernetes-tools.zip -d $HOME/plugins/vscode-kubernetes-tools && \
-    mkdir -p $HOME/plugins/vscode-yaml && \
-    wget https://marketplace.visualstudio.com/_apis/public/gallery/publishers/redhat/vsextensions/vscode-yaml/0.4.0/vspackage -O /tmp/vscode-yaml.zip.gz && \
-    gunzip /tmp/vscode-yaml.zip.gz && \
-    mkdir -p $HOME/plugins/vscode-yaml && \
-    unzip /tmp/vscode-yaml.zip -d $HOME/plugins/vscode-yaml && \
-    rm -rf /tmp/*
+    nvim "+PlugInstall" "+qall"
 
 ADD --chown=theia:theia dotfiles/.zshrc $HOME
+
+ENTRYPOINT [ "/bin/entrypoint.sh" ]
