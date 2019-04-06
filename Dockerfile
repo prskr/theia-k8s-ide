@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y apt-transport-https && \
     chmod +x /usr/local/bin/exa && \
     echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list && \
     apt-get update && \
-    apt-get install -y kubectl zsh neovim && \
+    apt-get install -y kubectl zsh neovim jq && \
     apt-get clean -y && \
     rm -rf /tmp/*
 
