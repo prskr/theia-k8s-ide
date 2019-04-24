@@ -1,12 +1,19 @@
-FROM theiaide/theia-go:next
+FROM theiaide/theia-full:next
 
 ARG K8S_VERSION=1.14.0
 ARG HELM_VERSION=2.13.1
 ARG EXA_VERSION=0.8.0
 
+ENV LC_CTYPE="en_US.UTF-8" \
+    LC_ALL="en_US.UTF-8" \
+    LANG="en_US.UTF-8"
+
 USER root
 
-RUN apt-get update && apt-get install -y apt-transport-https && \
+RUN apt-get update && apt-get install -y \
+        apt-transport-https \
+        fonts-powerline \
+        locales-all && \
     curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - &&  \
     curl -L https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz | tar zx -C /tmp linux-amd64/helm && \
     mv /tmp/linux-amd64/helm /usr/local/bin/ && \
@@ -18,7 +25,7 @@ RUN apt-get update && apt-get install -y apt-transport-https && \
     apt-get update && \
     apt-get install -y kubectl zsh neovim jq gawk && \
     apt-get clean -y && \
-    rm -rf /tmp/*
+    rm -rf /tmp/* 
 
 ADD scripts/entrypoint.sh /bin/
 
@@ -34,6 +41,7 @@ RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh
     curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim && \
     git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions && \
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.zsh/zsh-syntax-highlighting && \
+    git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k && \
     nvim "+PlugInstall" "+qall"
 
 ADD --chown=theia:theia dotfiles/.zshrc $HOME
