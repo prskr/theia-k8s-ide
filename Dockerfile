@@ -35,6 +35,7 @@ ENV SHELL=/bin/zsh \
     VSCODE_EXTENSIONS="https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-kubernetes-tools/vsextensions/vscode-kubernetes-tools/0.1.18/vspackage https://marketplace.visualstudio.com/_apis/public/gallery/publishers/redhat/vsextensions/vscode-yaml/0.4.0/vspackage"
 
 ADD --chown=theia:theia dotfiles/init.vim $HOME/.config/nvim/init.vim
+ADD --chown=theia:theia settings.json /home/theia/.theia/settings.json
 
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" && \
     mkdir -p ~/.zsh && \
@@ -42,7 +43,10 @@ RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh
     git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions && \
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.zsh/zsh-syntax-highlighting && \
     git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k && \
-    nvim "+PlugInstall" "+qall"
+    nvim "+PlugInstall" "+qall" && \
+    mkdir -p ~/.fonts/adobe-fonts/source-code-pro && \
+    git clone https://github.com/adobe-fonts/source-code-pro.git ~/.fonts/adobe-fonts/source-code-pro && \
+    fc-cache -f -v ~/.fonts/adobe-fonts/source-code-pro
 
 ADD --chown=theia:theia dotfiles/.zshrc $HOME
 
