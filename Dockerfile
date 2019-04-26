@@ -32,7 +32,8 @@ ADD scripts/entrypoint.sh /bin/
 USER theia
 
 ENV SHELL=/bin/zsh \
-    VSCODE_EXTENSIONS="https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-kubernetes-tools/vsextensions/vscode-kubernetes-tools/0.1.18/vspackage https://marketplace.visualstudio.com/_apis/public/gallery/publishers/redhat/vsextensions/vscode-yaml/0.4.0/vspackage"
+        GOPATH=$GOPATH:/home/project \
+        VSCODE_EXTENSIONS="https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-kubernetes-tools/vsextensions/vscode-kubernetes-tools/0.1.18/vspackage https://marketplace.visualstudio.com/_apis/public/gallery/publishers/redhat/vsextensions/vscode-yaml/0.4.0/vspackage https://marketplace.visualstudio.com/_apis/public/gallery/publishers/HookyQR/vsextensions/beautify/1.4.11/vspackage https://marketplace.visualstudio.com/_apis/public/gallery/publishers/humao/vsextensions/rest-client/0.21.2/vspackage"
 
 ADD --chown=theia:theia dotfiles/init.vim $HOME/.config/nvim/init.vim
 ADD --chown=theia:theia settings.json /home/theia/.theia/settings.json
